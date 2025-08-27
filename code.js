@@ -1,13 +1,13 @@
 window.addEventListener("DOMContentLoaded", () => {
     const currentTime = new Date().toISOString()
-    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString()
+    const pastDate = new Date(Date.now() - 60 * 60 * 1000 * 24).toISOString()
     const apikey = 'd32f87286728727d2a8bd772b0d69382'
     const newsList = document.querySelector(".news__list")
     
     const getLastTime = Number(localStorage.getItem("last_time"))
     const getArticles = JSON.parse(localStorage.getItem("fetched_data"))
     
-    const params = `search?q=AMD OR AMD stock OR Intel or Intel stock&lang=en&from=${oneHourAgo}&to=${currentTime}`
+    const params = `top-headlines?category=business&q=AMD OR AMD stock OR Intel or Intel stock&lang=en&from=${pastDate}&to=${currentTime}&max=10`
     const url = `https://gnews.io/api/v4/${params}&apikey=${apikey}`
 
     function fetchNewData(){
@@ -39,12 +39,15 @@ window.addEventListener("DOMContentLoaded", () => {
 
     // basically every 1 hour
     if(!getLastTime || (currentTime - getLastTime) > (60000 * 60)){
+        console.log("new_data_1")
         fetchNewData()
     }
-    else if(getArticles?.length > 0 ){
+    else if(getArticles && getArticles.length > 0 ){
+        console.log("old_data")
         renderData(getArticles)
     }
     else{
+        console.log("new_data_2")
         fetchNewData()
     }
 })
